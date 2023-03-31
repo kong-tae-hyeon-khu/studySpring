@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import config.AppConf1;
+import config.AppConf2;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -15,7 +17,7 @@ public class MainForSpring {
     private static ApplicationContext ctx = null;
 
     public static void main(String[] args) throws IOException {
-        ctx = new AnnotationConfigApplicationContext(Appctx.class); // 스프링 컨테이너 생성.
+        ctx = new AnnotationConfigApplicationContext(AppConf1.class, AppConf2.class); // 스프링 컨테이너 생성.
         BufferedReader reader =
                 new BufferedReader(new InputStreamReader(System.in));
         while (true) {
@@ -36,7 +38,10 @@ public class MainForSpring {
                 processListCommand();
                 continue;
             } else if (command.startsWith("info")) {
-                processInfoCommand();
+                processInfoCommand(command.split(" "));
+                continue;
+            } else if (command.equals("version")) {
+                processVersionCommand();
                 continue;
             }
             printHelp();
@@ -103,5 +108,10 @@ public class MainForSpring {
         }
         MemberInfoPrinter infoPrinter = ctx.getBean("infoPrinter", MemberInfoPrinter.class);
         infoPrinter.printMemberInfo(args[1]);
+    }
+
+    private static void processVersionCommand() {
+        VersionPrinter versionPrinter = ctx.getBean("versionPrinter", VersionPrinter.class);
+        versionPrinter.print();
     }
 }

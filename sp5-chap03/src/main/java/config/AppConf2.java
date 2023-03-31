@@ -1,55 +1,50 @@
 package config;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import spring.MemberDao;
-import spring.MemberRegisterService;
+
 import spring.ChangePasswordService;
-import spring.MemberPrinter;
-import spring.MemberListPrinter;
+import spring.MemberDao;
 import spring.MemberInfoPrinter;
+import spring.MemberListPrinter;
+import spring.MemberPrinter;
+import spring.MemberRegisterService;
 import spring.VersionPrinter;
+
+
 @Configuration
-public class Appctx {
-    @Bean
-    public MemberDao memberDao() {
-        return new MemberDao();
-    }
+public class AppConf2 {
+
+    @Autowired
+    private MemberDao memberDao;
+    @Autowired
+    private MemberPrinter memberPrinter;
 
     @Bean
     public MemberRegisterService memberRegSvc() {
-        return new MemberRegisterService(memberDao()); // DI
+        return new MemberRegisterService(memberDao);
     }
 
     @Bean
     public ChangePasswordService changePwdSvc() {
         ChangePasswordService pwdSvc = new ChangePasswordService();
-        pwdSvc.setMemberDao(memberDao()); // DI
+        pwdSvc.setMemberDao(memberDao);
         return pwdSvc;
     }
-
     @Bean
-    public MemberPrinter memberPrinter() {
-        return new MemberPrinter();
+    public MemberListPrinter listPriner() {
+        return new MemberListPrinter(memberDao, memberPrinter);
     }
-
     @Bean
-    public MemberListPrinter listPrinter() {
-
-        // 두 개의 객체에 대하여 의존 주입.
-        return new MemberListPrinter(memberDao(), memberPrinter());
-    }
-
-    @Bean
-    public  MemberInfoPrinter infoPrinter() {
+    public MemberInfoPrinter infoPrinter() {
         MemberInfoPrinter infoPrinter = new MemberInfoPrinter();
-        infoPrinter.setMemberDao(memberDao());
-        infoPrinter.setPrinter(memberPrinter());
-
+        infoPrinter.setMemberDao(memberDao);
+        infoPrinter.setPrinter(memberPrinter);
         return infoPrinter;
     }
-
     @Bean
     public VersionPrinter versionPrinter() {
         VersionPrinter versionPrinter = new VersionPrinter();
