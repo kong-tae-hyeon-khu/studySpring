@@ -8,6 +8,8 @@ import spring.MemberRegisterService;
 import spring.ChangePasswordService;
 import spring.MemberPrinter;
 import spring.MemberListPrinter;
+import spring.MemberInfoPrinter;
+
 @Configuration
 public class Appctx {
     @Bean
@@ -37,5 +39,14 @@ public class Appctx {
 
         // 두 개의 객체에 대하여 의존 주입.
         return new MemberListPrinter(memberDao(), memberPrinter());
+    }
+
+    @Bean
+    public  MemberInfoPrinter infoPrinter() {
+        MemberInfoPrinter infoPrinter = new MemberInfoPrinter();
+        infoPrinter.setMemberDao(memberDao());
+        infoPrinter.setPrinter(memberPrinter());
+
+        return infoPrinter;
     }
 }
